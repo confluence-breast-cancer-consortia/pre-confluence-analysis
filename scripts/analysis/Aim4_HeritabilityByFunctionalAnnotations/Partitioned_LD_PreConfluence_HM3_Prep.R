@@ -1,0 +1,69 @@
+rm(list = ls())
+
+library(dplyr)
+library(stringr)
+library(readxl)
+
+eth <- c("EUR","AFR","EAS","AMR","SAS")
+
+w_hm3 <- read.csv("/data/williamsjacr/ldsc/w_hm3_updated.snplist")
+w_hm3_ldsc <- w_hm3[,c("rsid","allele1","allele2")]
+colnames(w_hm3_ldsc) <- c("SNP","A1","A2")
+write.table(w_hm3_ldsc,file = "/data/williamsjacr/ldsc/w_hm3_ldsc.snplist",row.names = FALSE,quote=F,sep = '\t')
+write.table(w_hm3_ldsc[,1,drop = FALSE],file = "/data/williamsjacr/1KG_Partitioned_LDSC_HM3/w_hm3_ldsc_printsnps.snplist",row.names = FALSE,quote=F,sep = '\t',col.names = FALSE)
+write.table(w_hm3_ldsc[,c(1,2)],file = "/data/williamsjacr/ldsc/ref_allele_hm3.txt",row.names = FALSE,quote=F,col.names = FALSE)
+
+Gazal_Inbreeding_amp_Related <- read_excel("/data/williamsjacr/Gazal_Inbreeding &amp; Related.xls")
+colnames(Gazal_Inbreeding_amp_Related) <- c("IID","Super_Pop","Pop","Gender","Q_Score","f","p_value","Mating_Type","TGP2457","TGP2261")
+IDS_BAD <- Gazal_Inbreeding_amp_Related$IID[Gazal_Inbreeding_amp_Related$TGP2457 != "YES" | Gazal_Inbreeding_amp_Related$TGP2261 != "YES"]
+
+for(i in 1:length(eth)){
+  
+  kg.dir <- paste0("/data/BB_Bioinformatics/ProjectData/1000G_full_data/GRCh37/",eth[i],"/")
+  local_dir <- paste0("/data/williamsjacr/1KG_Partitioned_LDSC_HM3/",eth[i],"/")
+  system(paste0("mkdir ",local_dir))
+  system(paste0("mkdir ",local_dir,eth[i],"_hm3_ldsc/"))
+  system(paste0("cp /data/williamsjacr/ldsc/w_hm3_ldsc.snplist ",local_dir,eth[i],"_hm3_ldsc/"))
+  system(paste0("cp -a /data/williamsjacr/Aim4_PartitionedHeritability/LDSC_Files/AFR_AMR_annot_gz/. ",local_dir,eth[i],"_hm3_ldsc/"))
+  
+  for(j in 1:22){
+    fam <- read.table(paste0(kg.dir,"chr",j,".fam"))
+    fam <- fam[!(fam$V2 %in% IDS_BAD),]
+    write.table(cbind(0,fam$V2),file = paste0(local_dir,"keeplist"),row.names = F,col.names = F,quote=F)
+    
+    bim <- read.table(paste0(kg.dir,"chr",j,".bim"))
+    system(paste0("gunzip ",local_dir,eth[i],"_hm3_ldsc/baselineLD.",j,".annot.gz"))
+    All_Baseline <- read.delim(paste0(local_dir,eth[i],"_hm3_ldsc/baselineLD.",j,".annot"))
+    bim <- bim[bim$V2 %in% All_Baseline$SNP,]
+    All_Baseline <- All_Baseline[All_Baseline$SNP %in% bim$V2,]
+    All_Baseline <- All_Baseline[match(bim$V2,All_Baseline$SNP),]
+    
+    write.table(x = All_Baseline,file = paste0(local_dir,eth[i],"_hm3_ldsc/baselineLD.",j,".annot"), row.names = F, col.names = T, quote = F, sep = '\t')
+    system(paste0("gzip ",local_dir,eth[i],"_hm3_ldsc/baselineLD.",j,".annot"))
+    
+    write.table(bim$V2,file = paste0(local_dir,"annot_match"),row.names = F,col.names = F,quote=F)
+    system(paste0("/data/williamsjacr/software/plink2 --bfile ",kg.dir,"chr",j," --keep ",local_dir,"keeplist --extract ",local_dir,"annot_match --ref-allele /data/williamsjacr/ldsc/ref_allele_hm3.txt --make-bed --out ",local_dir,"chr_clean",j))
+    system(paste0("rm ",paste0(local_dir,"keeplist")))
+    system(paste0("rm ",paste0(local_dir,"annot_match")))
+  }
+  
+  if(j == 6){
+    bim <- read.table(paste0(local_dir,"chr_clean",j,".bim"))
+    bim <- bim[bim$V4 >= 25002566 & bim$V4 <= 34994414,]
+    write.table(bim$V2,file = paste0(local_dir,"remove_region_chr6"),row.names = F,col.names = F,quote=F)
+    
+    system(paste0("gunzip ",local_dir,eth[i],"_hm3_ldsc/baselineLD.",j,".annot.gz"))
+    All_Baseline <- read.delim(paste0(local_dir,eth[i],"_hm3_ldsc/baselineLD.",j,".annot"))
+    All_Baseline <- All_Baseline[!(All_Baseline$SNP %in% bim$V2),]
+    
+    write.table(x = All_Baseline,file = paste0(local_dir,eth[i],"_hm3_ldsc/baselineLD.",j,".annot"), row.names = F, col.names = T, quote = F, sep = '\t')
+    system(paste0("gzip ",local_dir,eth[i],"_hm3_ldsc/baselineLD.",j,".annot"))
+    
+    system(paste0("/data/williamsjacr/software/plink2 --bfile ",local_dir,"chr_clean",j," --exclude ",local_dir,"remove_region_chr6 --make-bed --out ",local_dir,"chr_clean",j))
+    
+    system(paste0("rm ",paste0(local_dir,"chr_clean",j,".bim~")))
+    system(paste0("rm ",paste0(local_dir,"chr_clean",j,".fam~")))
+    system(paste0("rm ",paste0(local_dir,"chr_clean",j,".bed~")))
+    system(paste0("rm ",paste0(local_dir,"remove_region_chr6")))
+  }
+}
