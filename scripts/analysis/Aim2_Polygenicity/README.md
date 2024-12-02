@@ -1,3 +1,3 @@
 # Aim2_Polygenicity
 
-This folder contains code to construct LD matrices in the GENESIS format for each ancestry, trait the 2 component and 3 component GENESIS models, estimate the phenotypic variance/genotypic variance/AUC from the 3 component GENESIS model, and extract the results. 
+This folder contains code to construct LD matrices in the GENESIS format for each ancestry using 1000G data, train the 2 component and 3 component GENESIS models, estimate the phenotypic variance/genotypic variance/AUC from the 3 component GENESIS model, compute the genotypic/phenotypic variance as well as the AUC, and create Figures ... as shown in the main manuscript. Code to construct LD matrices in the GENESIS format for the AABCG cohort is identical to that of the the 1000G data. 

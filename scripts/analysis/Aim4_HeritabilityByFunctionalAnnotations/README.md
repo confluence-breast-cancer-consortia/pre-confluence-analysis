@@ -1,3 +1,3 @@
 # Aim4_HeritabilityByFunctionalAnnotations
 
-This folder contains code to concatenate existing annotated GZ files from prior partitioned heritability analyses of EUR and EAS, use concatenated GZ files to obtained partitioned LD scores for each ancestry, and estimate the partitioned heritability for each functional annotation for each ancestry and plot the results.  
+This folder contains code to concatenate existing annotated GZ files from prior partitioned heritability analyses of EUR and EAS, use these concatenated GZ files to obtained partitioned LD scores for each ancestry for 1000G, and estimate the partitioned heritability for each functional annotation for each ancestry and plot the results. Code to obtain the partitioned LD scores for the AABCG cohort is identical to that of the 1000G data.  
