@@ -49,26 +49,46 @@ plot_data <- data.frame(Ancestry = "EUR",plot_data)
 
 load("/data/williamsjacr/Aim2_Genesis/AFR_HM3_05_AABCG/Results/AABCG_Phenotypic_Variance.RData")
 
-plot_data <- rbind(plot_data,data.frame(Ancestry = "AA",results[,c("n_seq","pheno.best","AUC_Optimum","Genetic_Variance_Optimum","pheno.bestGWAS","AUC_GWAS","Genetic_Variance_GWAS")]))
+plot_data <- rbind(plot_data,data.frame(Ancestry = "AFR",results[,c("n_seq","pheno.best","AUC_Optimum","Genetic_Variance_Optimum","pheno.bestGWAS","AUC_GWAS","Genetic_Variance_GWAS")]))
 
 load("/data/williamsjacr/Aim2_Genesis/EAS_HM3_05_PreExtract/Results/EAS_Full1KG_Phenotypic_Variance.RData")
 
 plot_data <- rbind(plot_data,data.frame(Ancestry = "EAS",results[,c("n_seq","pheno.best","AUC_Optimum","Genetic_Variance_Optimum","pheno.bestGWAS","AUC_GWAS","Genetic_Variance_GWAS")]))
 
-p1 <- ggplot(plot_data,aes(x = n_seq/1000, y = pheno.best,color = Ancestry)) + geom_line(size = 1) + theme_Publication() + ggtitle("Phenotypic Variance") + 
+p1 <- ggplot(plot_data,aes(x = n_seq/1000, y = pheno.best,color = Ancestry)) + geom_line(size = 1) + theme_Publication() +
   ylab("Percentage of phenotypic variance explained") + xlab("Total sample size assuming 1:1 case:control ratio (in thousands)") + 
   scale_color_manual(values=c("#386cb0","#EF7E3D","#ffd558","#7fc97f","#ef3b2c","#973999")) + geom_vline(xintercept = ff(100000,100000)*4/1000,color = "#ef3b2c",linetype = "dashed",size = 1)
 
 ggsave(p1,filename="/data/williamsjacr/Aim2_Genesis/Phenotypic_Variance.pdf",width = 10,height = 6.1804697157)
 
-p2 <- ggplot(plot_data,aes(x = n_seq/1000, y = AUC_Optimum,color = Ancestry)) + geom_line(size = 1) + theme_Publication() + ggtitle("AUC") +
+p2 <- ggplot(plot_data,aes(x = n_seq/1000, y = AUC_Optimum,color = Ancestry)) + geom_line(size = 1) + theme_Publication() +
   ylab("AUC associated with the PRS") + xlab("Total sample size assuming 1:1 case:control ratio (in thousands)") + 
-  scale_color_manual(values=c("#386cb0","#EF7E3D","#ffd558","#7fc97f","#ef3b2c","#973999")) + geom_vline(xintercept = ff(100000,100000)*4/1000,color = "#ef3b2c",linetype = "dashed",size = 1)
+  scale_color_manual(values=c("#386cb0","#EF7E3D","#ffd558","#7fc97f","#ef3b2c","#973999")) + geom_vline(xintercept = ff(100000,100000)*4/1000,color = "#ef3b2c",linetype = "dashed",size = 1) + ylim(0.5,0.70)
 
-ggsave(p2,filename="/data/williamsjacr/Aim2_Genesis/AUC.pdf",width = 10,height = 6.1804697157)
+ggsave(p2,filename="/data/williamsjacr/Aim2_Genesis/AUC.pdf",width = 10,height = 10)
 
-p3 <- ggplot(plot_data,aes(x = n_seq/1000, y = Genetic_Variance_Optimum,color = Ancestry)) + geom_line(size = 1) + theme_Publication() + ggtitle("Genetic Variance") +
+p3 <- ggplot(plot_data,aes(x = n_seq/1000, y = Genetic_Variance_Optimum,color = Ancestry)) + geom_line(size = 1) + theme_Publication() +
   ylab("Percentage of genetic variance explained") + xlab("Total sample size assuming 1:1 case:control ratio (in thousands)") + 
-  scale_color_manual(values=c("#386cb0","#EF7E3D","#ffd558","#7fc97f","#ef3b2c","#973999")) + geom_vline(xintercept = ff(100000,100000)*4/1000,color = "#ef3b2c",linetype = "dashed",size = 1)
+  scale_color_manual(values=c("#386cb0","#EF7E3D","#ffd558","#7fc97f","#ef3b2c","#973999")) + geom_vline(xintercept = ff(100000,100000)*4/1000,color = "#ef3b2c",linetype = "dashed",size = 1) + ylim(0,100)
 
-ggsave(p3,filename="/data/williamsjacr/Aim2_Genesis/Genetic_Variance.pdf",width = 10,height = 6.1804697157)
+ggsave(p3,filename="/data/williamsjacr/Aim2_Genesis/Genetic_Variance.pdf",width = 10,height = 10)
+
+
+
+
+load("/data/williamsjacr/Aim2_Genesis/EUR_HM3_05_PreExtract/Results/EUR_Full1KG_Phenotypic_Variance_Supp_Table4.RData")
+
+SuppTable4_data <- results[,c("n_seq","AUC_Optimum","Genetic_Variance_Optimum")]
+colnames(SuppTable4_data)[2:3] <- paste0("EUR_",colnames(SuppTable4_data)[2:3])
+
+load("/data/williamsjacr/Aim2_Genesis/AFR_HM3_05_AABCG/Results/AABCG_Phenotypic_Variance_Supp_Table4.RData")
+
+SuppTable4_data <- cbind(SuppTable4_data,results[,c("AUC_Optimum","Genetic_Variance_Optimum")])
+colnames(SuppTable4_data)[4:5] <- paste0("AFR_",colnames(SuppTable4_data)[4:5])
+
+load("/data/williamsjacr/Aim2_Genesis/EAS_HM3_05_PreExtract/Results/EAS_Full1KG_Phenotypic_Variance_Supp_Table4.RData")
+
+SuppTable4_data <- cbind(SuppTable4_data,results[,c("AUC_Optimum","Genetic_Variance_Optimum")])
+colnames(SuppTable4_data)[6:7] <- paste0("EAS_",colnames(SuppTable4_data)[6:7])
+
+write.csv(SuppTable4_data,file = "/data/williamsjacr/Aim2_Genesis/SuppTable4.csv",row.names = FALSE)

@@ -8,4 +8,4 @@
 module load ldsc
 module load R/4.3.2
 
-Rscript --slave --no-restore --no-save /spin1/home/linux/williamsjacr/Aim4_PartitionedHeritability/EUR_HM3_05.R > EUR_HM3_05.Rout
+Rscript --slave --no-restore --no-save /spin1/home/linux/williamsjacr/pre-confluence-analysis/scripts/analysis/Aim4_HeritabilityByFunctionalAnnotations/EUR_HM3_05.R > EUR_HM3_05.Rout

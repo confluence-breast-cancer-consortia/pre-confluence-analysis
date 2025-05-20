@@ -45,3 +45,12 @@ system(paste0("ldsc.py",
               " --overlap-annot",
               " --out /data/williamsjacr/Aim4_PartitionedHeritability/Results/EUR_05_HM3_My_LDSC",  
               " --print-cov --print-coefficients --print-delete-vals"))
+
+system(paste0("ldsc.py",
+              " --h2 /data/williamsjacr/Aim4_PartitionedHeritability/Intermediate_Files/sum_align.sumstats.gz",
+              " --w-ld-chr /data/williamsjacr/1KG_ldsc_w_ld_chr_HM3/EUR/",
+              " --ref-ld-chr /data/williamsjacr/1KG_Partitioned_LDSC_HM3/EUR/EUR_hm3_ldsc/baselineLD.", 
+              " --frqfile-chr /data/williamsjacr/1KG_Partitioned_LDSC_HM3/EUR/chr_clean",  
+              " --overlap-annot",
+              " --out /data/williamsjacr/Aim4_PartitionedHeritability/Results/EUR_05_HM3_w_ld_chr",  
+              " --print-cov --print-coefficients --print-delete-vals"))

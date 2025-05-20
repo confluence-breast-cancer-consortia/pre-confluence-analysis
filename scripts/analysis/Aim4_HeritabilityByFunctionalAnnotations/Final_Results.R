@@ -54,6 +54,19 @@ EUR_Mine_Results$Category[EUR_Mine_Results$Category == "H3K4me1_Trynka"] <- "H3K
 EUR_Mine_Results <- EUR_Mine_Results[EUR_Mine_Results$Category!= "base",]
 EUR_Mine_Table <- EUR_Mine_Results[EUR_Mine_Results$Enrichment_p < 0.05/nrow(EUR_Mine_Results),]
 
+EUR_w_ld_chr_Results <- read.delim("/data/williamsjacr/Aim4_PartitionedHeritability/Results/EUR_05_HM3_w_ld_chr.results")
+EUR_w_ld_chr_Results$Prop._h2[EUR_w_ld_chr_Results$Prop._h2 < 0] <- 0
+EUR_w_ld_chr_Results$Enrichment <- EUR_w_ld_chr_Results$Prop._h2/EUR_w_ld_chr_Results$Prop._SNPs
+EUR_w_ld_chr_Results$Category <- gsub("L2_0","",EUR_w_ld_chr_Results$Category)
+EUR_w_ld_chr_Results$Category[EUR_w_ld_chr_Results$Category == "H3K27ac_Hnisz"] <- "H3K27ac"
+EUR_w_ld_chr_Results$Category[EUR_w_ld_chr_Results$Category == "SuperEnhancer_Hnisz"] <- "SuperEnhancer"
+EUR_w_ld_chr_Results$Category[EUR_w_ld_chr_Results$Category == "Ancient_Sequence_Age_Human_Promoter"] <- "Ancient Promoter"
+EUR_w_ld_chr_Results$Category[EUR_w_ld_chr_Results$Category == "TFBS_ENCODE"] <- "TFBS"
+EUR_w_ld_chr_Results$Category[EUR_w_ld_chr_Results$Category == "H3K4me3_Trynka"] <- "H3K4me3"
+EUR_w_ld_chr_Results$Category[EUR_w_ld_chr_Results$Category == "H3K4me1_Trynka"] <- "H3K4me1"
+EUR_w_ld_chr_Results <- EUR_w_ld_chr_Results[EUR_w_ld_chr_Results$Category!= "base",]
+EUR_w_ld_chr_Table <- EUR_w_ld_chr_Results[EUR_w_ld_chr_Results$Enrichment_p < 0.05/nrow(EUR_w_ld_chr_Results),]
+
 EUR_Theirs_Results <- read.delim("/data/williamsjacr/Aim4_PartitionedHeritability/Results/EUR_05_HM3_Their_LDSC.results")
 EUR_Theirs_Results$Prop._h2[EUR_Theirs_Results$Prop._h2 < 0] <- 0
 EUR_Theirs_Results$Enrichment <- EUR_Theirs_Results$Prop._h2/EUR_Theirs_Results$Prop._SNPs
@@ -101,7 +114,7 @@ All_EAS_Table <- data.frame(Ancestry = "EAS",Name = EAS_Mine_Results$Category,Pe
                             Enrichment = paste0(round(EAS_Mine_Results$Enrichment,digits = 3)," (",round(EAS_Mine_Results$Enrichment_std_error,digits = 3),")"),Enrichment_PValue = EAS_Mine_Results$Enrichment_p)
 All_AMR_Table <- data.frame(Ancestry = "AMR",Name = AMR_Results$Category,Percent_SNPs = round(AMR_Results$Prop._SNPs,digits = 3),Percent_H2 = paste0(round(AMR_Results$Prop._h2,digits = 3)," (",round(AMR_Results$Prop._h2_std_error,digits = 3),")"),
                             Enrichment = paste0(round(AMR_Results$Enrichment,digits = 3)," (",round(AMR_Results$Enrichment_std_error,digits = 3),")"),Enrichment_PValue = AMR_Results$Enrichment_p)
-All_AA_Table <- data.frame(Ancestry = "AA",Name = AFR_AABCG_Results$Category,Percent_SNPs = round(AFR_AABCG_Results$Prop._SNPs,digits = 3),Percent_H2 = paste0(round(AFR_AABCG_Results$Prop._h2,digits = 3)," (",round(AFR_AABCG_Results$Prop._h2_std_error,digits = 3),")"),
+All_AA_Table <- data.frame(Ancestry = "AFR",Name = AFR_AABCG_Results$Category,Percent_SNPs = round(AFR_AABCG_Results$Prop._SNPs,digits = 3),Percent_H2 = paste0(round(AFR_AABCG_Results$Prop._h2,digits = 3)," (",round(AFR_AABCG_Results$Prop._h2_std_error,digits = 3),")"),
                            Enrichment = paste0(round(AFR_AABCG_Results$Enrichment,digits = 3)," (",round(AFR_AABCG_Results$Enrichment_std_error,digits = 3),")"),Enrichment_PValue = AFR_AABCG_Results$Enrichment_p)
 
 All <- rbind(All_EUR_Table,All_EAS_Table,All_AMR_Table,All_AA_Table)
@@ -111,7 +124,7 @@ EUR_Results <- data.frame(Ancestry = "EUR",Name = EUR_Mine_Table$Category,Percen
                           Enrichment = paste0(round(EUR_Mine_Table$Enrichment,digits = 3)," (",round(EUR_Mine_Table$Enrichment_std_error,digits = 3),")"),Enrichment_PValue = EUR_Mine_Table$Enrichment_p)
 EAS_Results <- data.frame(Ancestry = "EAS",Name = EAS_Mine_Table$Category,Percent_SNPs = round(EAS_Mine_Table$Prop._SNPs,digits = 3),Percent_H2 = paste0(round(EAS_Mine_Table$Prop._h2,digits = 3)," (",round(EAS_Mine_Table$Prop._h2_std_error,digits = 3),")"),
                           Enrichment = paste0(round(EAS_Mine_Table$Enrichment,digits = 3)," (",round(EAS_Mine_Table$Enrichment_std_error,digits = 3),")"),Enrichment_PValue = EAS_Mine_Table$Enrichment_p)
-AABCG_Results <- data.frame(Ancestry = "AA",Name = AFR_AABCG_Table$Category,Percent_SNPs = round(AFR_AABCG_Table$Prop._SNPs,digits = 3),Percent_H2 = paste0(round(AFR_AABCG_Table$Prop._h2,digits = 3)," (",round(AFR_AABCG_Table$Prop._h2_std_error,digits = 3),")"),
+AABCG_Results <- data.frame(Ancestry = "AFR",Name = AFR_AABCG_Table$Category,Percent_SNPs = round(AFR_AABCG_Table$Prop._SNPs,digits = 3),Percent_H2 = paste0(round(AFR_AABCG_Table$Prop._h2,digits = 3)," (",round(AFR_AABCG_Table$Prop._h2_std_error,digits = 3),")"),
                             Enrichment = paste0(round(AFR_AABCG_Table$Enrichment,digits = 3)," (",round(AFR_AABCG_Table$Enrichment_std_error,digits = 3),")"),Enrichment_PValue = AFR_AABCG_Table$Enrichment_p)
 
 write.csv(rbind(EUR_Results,EAS_Results,AABCG_Results),file = "tmp.csv",row.names = FALSE)
@@ -119,7 +132,8 @@ write.csv(rbind(EUR_Results,EAS_Results,AABCG_Results),file = "tmp.csv",row.name
 Figure_Data <- rbind(data.frame(Ancestry = "AFR",AFR_AABCG_Results),data.frame(Ancestry = "AMR",AMR_Results),data.frame(Ancestry = "EUR",EUR_Mine_Results),data.frame(Ancestry = "EAS",EAS_Mine_Results))
 Figure_Data <- Figure_Data[Figure_Data$Category %in% EUR_Results$Name,]
 Figure_Data <- Figure_Data[Figure_Data$Category != "Ancient Promoter",]
-Figure_Data$Ancestry[Figure_Data$Ancestry == "AFR"] <- "AA"
+Figure_Data$Ancestry[Figure_Data$Ancestry == "AFR"] <- "AFR"
+Figure_Data$Ancestry[Figure_Data$Ancestry == "AMR"] <- "H/L"
 
 # Figure_Data <- Figure_Data[Figure_Data$Ancestry != "AMR",]
 
@@ -132,8 +146,8 @@ heterogenity_dat <- NULL
 
 for(cat in unique(Figure_Data$Category)){
   tmp <- Figure_Data[Figure_Data$Category == cat,]
-  Beta <- matrix(c(tmp$Enrichment[tmp$Ancestry == "EUR"],tmp$Enrichment[tmp$Ancestry == "AA"],tmp$Enrichment[tmp$Ancestry == "AMR"],tmp$Enrichment[tmp$Ancestry == "EAS"]),ncol = 1)
-  Sigma <- diag(c(tmp$Enrichment_std_error[tmp$Ancestry == "EUR"]^2,tmp$Enrichment_std_error[tmp$Ancestry == "AA"]^2,tmp$Enrichment_std_error[tmp$Ancestry == "AMR"]^2,tmp$Enrichment_std_error[tmp$Ancestry == "EAS"]^2))
+  Beta <- matrix(c(tmp$Enrichment[tmp$Ancestry == "EUR"],tmp$Enrichment[tmp$Ancestry == "AFR"],tmp$Enrichment[tmp$Ancestry == "H/L"],tmp$Enrichment[tmp$Ancestry == "EAS"]),ncol = 1)
+  Sigma <- diag(c(tmp$Enrichment_std_error[tmp$Ancestry == "EUR"]^2,tmp$Enrichment_std_error[tmp$Ancestry == "AFR"]^2,tmp$Enrichment_std_error[tmp$Ancestry == "H/L"]^2,tmp$Enrichment_std_error[tmp$Ancestry == "EAS"]^2))
   Q <- C%*%Beta
   Q_Stand <- solve(sqrtm(C%*%Sigma%*%t(C)))%*%Q
   test_statistic <- as.numeric(t(Q_Stand)%*%Q_Stand)
